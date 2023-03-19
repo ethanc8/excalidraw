@@ -88,7 +88,7 @@ const keyBindings = [
   ["z", "x", "c", "v", "b"],
 ].flat();
 
-const Picker = ({
+export const ColorPalette = ({
   colors,
   color,
   onChange,
@@ -97,6 +97,7 @@ const Picker = ({
   showInput = true,
   type,
   elements,
+  isPopup = false,
 }: {
   colors: string[];
   color: string | null;
@@ -106,6 +107,7 @@ const Picker = ({
   showInput: boolean;
   type: "canvasBackground" | "elementBackground" | "elementStroke";
   elements: readonly ExcalidrawElement[];
+  isPopup: boolean;
 }) => {
   const firstItem = React.useRef<HTMLButtonElement>();
   const activeItem = React.useRef<HTMLButtonElement>();
@@ -129,6 +131,50 @@ const Picker = ({
       gallery.current.focus();
     }
   }, []);
+
+  const renderColors = (colors: Array<string>, custom: boolean = false) => {
+    return colors.map((_color, i) => {
+      const _colorWithoutHash = _color.replace("#", "");
+      const keyBinding = custom
+        ? keyBindings[i + MAX_DEFAULT_COLORS]
+        : keyBindings[i];
+      const label = custom
+        ? _colorWithoutHash
+        : t(`colors.${_colorWithoutHash}`);
+      return (
+        <button
+          className="color-picker-swatch"
+          onClick={(event) => {
+            (event.currentTarget as HTMLButtonElement).focus();
+            onChange(_color);
+          }}
+          title={`${label}${
+            !isTransparent(_color) ? ` (${_color})` : ""
+          } — ${keyBinding.toUpperCase()}`}
+          aria-label={label}
+          aria-keyshortcuts={keyBindings[i]}
+          style={{ color: _color }}
+          key={_color}
+          ref={(el) => {
+            if (!custom && el && i === 0) {
+              firstItem.current = el;
+            }
+            if (el && _color === color) {
+              activeItem.current = el;
+            }
+          }}
+          onFocus={() => {
+            onChange(_color);
+          }}
+        >
+          {isTransparent(_color) ? (
+            <div className="color-picker-transparent"></div>
+          ) : undefined}
+          <span className="color-picker-keybinding">{keyBinding}</span>
+        </button>
+      );
+    });
+  };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     let handled = false;
@@ -202,60 +248,20 @@ const Picker = ({
     }
   };
 
-  const renderColors = (colors: Array<string>, custom: boolean = false) => {
-    return colors.map((_color, i) => {
-      const _colorWithoutHash = _color.replace("#", "");
-      const keyBinding = custom
-        ? keyBindings[i + MAX_DEFAULT_COLORS]
-        : keyBindings[i];
-      const label = custom
-        ? _colorWithoutHash
-        : t(`colors.${_colorWithoutHash}`);
-      return (
-        <button
-          className="color-picker-swatch"
-          onClick={(event) => {
-            (event.currentTarget as HTMLButtonElement).focus();
-            onChange(_color);
-          }}
-          title={`${label}${
-            !isTransparent(_color) ? ` (${_color})` : ""
-          } — ${keyBinding.toUpperCase()}`}
-          aria-label={label}
-          aria-keyshortcuts={keyBindings[i]}
-          style={{ color: _color }}
-          key={_color}
-          ref={(el) => {
-            if (!custom && el && i === 0) {
-              firstItem.current = el;
-            }
-            if (el && _color === color) {
-              activeItem.current = el;
-            }
-          }}
-          onFocus={() => {
-            onChange(_color);
-          }}
-        >
-          {isTransparent(_color) ? (
-            <div className="color-picker-transparent"></div>
-          ) : undefined}
-          <span className="color-picker-keybinding">{keyBinding}</span>
-        </button>
-      );
-    });
-  };
-
   return (
     <div
-      className={`color-picker color-picker-type-${type}`}
-      role="dialog"
-      aria-modal="true"
+      className={isPopup ? `color-picker color-picker-type-${type}` : ""}
+      role={isPopup ? "dialog" : ""}
+      aria-modal={isPopup ? "true" : "false"}
       aria-label={t("labels.colorPicker")}
       onKeyDown={handleKeyDown}
     >
-      <div className="color-picker-triangle color-picker-triangle-shadow"></div>
-      <div className="color-picker-triangle"></div>
+      {isPopup && (
+        <>
+          <div className="color-picker-triangle color-picker-triangle-shadow"></div>
+          <div className="color-picker-triangle"></div>
+        </>
+      )}
       <div
         className="color-picker-content"
         ref={(el) => {
@@ -406,7 +412,7 @@ export const ColorPicker = ({
                 event.target !== pickerButton.current && setActive(false)
               }
             >
-              <Picker
+              <ColorPalette
                 colors={colors[type]}
                 color={color || null}
                 onChange={(changedColor) => {
@@ -420,6 +426,7 @@ export const ColorPicker = ({
                 showInput={false}
                 type={type}
                 elements={elements}
+                isPopup={true}
               />
             </Popover>
           </div>

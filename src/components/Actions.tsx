@@ -209,15 +209,23 @@ export const ShapesSwitcher = ({
   setAppState,
   onImageAction,
   appState,
+  shapes = SHAPES,
 }: {
   canvas: HTMLCanvasElement | null;
   activeTool: AppState["activeTool"];
   setAppState: React.Component<any, AppState>["setState"];
   onImageAction: (data: { pointerType: PointerType | null }) => void;
   appState: AppState;
+  shapes?: readonly {
+    readonly icon: JSX.Element;
+    readonly value: any;
+    readonly key: any;
+    readonly numericKey: any;
+    readonly fillable: any;
+  }[];
 }) => (
   <>
-    {SHAPES.map(({ value, icon, key, numericKey, fillable }, index) => {
+    {shapes.map(({ value, icon, key, numericKey, fillable }, index) => {
       const label = t(`toolBar.${value}`);
       const letter =
         key && capitalizeString(typeof key === "string" ? key : key[0]);
@@ -295,11 +303,13 @@ export const UndoRedoActions = ({
   className?: string;
 }) => (
   <div className={`undo-redo-buttons ${className}`}>
-    <div className="undo-button-container">
-      <Tooltip label={t("buttons.undo")}>{renderAction("undo")}</Tooltip>
+    <div className="undo-button-container" title={t("buttons.undo")}>
+      {renderAction("undo")}
+      {/* <Tooltip label={t("buttons.undo")}>{renderAction("undo")}</Tooltip> */}
     </div>
-    <div className="redo-button-container">
-      <Tooltip label={t("buttons.redo")}> {renderAction("redo")}</Tooltip>
+    <div className="redo-button-container" title={t("buttons.redo")}>
+      {renderAction("redo")}
+      {/* <Tooltip label={t("buttons.redo")}> {renderAction("redo")}</Tooltip> */}
     </div>
   </div>
 );

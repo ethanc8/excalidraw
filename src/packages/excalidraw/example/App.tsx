@@ -31,6 +31,8 @@ import { ImportedLibraryData } from "../../../data/types";
 import CustomFooter from "./CustomFooter";
 import MobileFooter from "./MobileFooter";
 
+import { MainMenubar } from "../../../components/MainMenubar";
+
 declare global {
   interface Window {
     ExcalidrawLib: typeof TExcalidraw;
@@ -714,7 +716,7 @@ export default function App({ appTitle, useCustom, customArgs }: AppProps) {
               </Footer>
             )}
             <WelcomeScreen />
-            {renderMenu()}
+            {/* {renderMenu()} */}
           </Excalidraw>
           {Object.keys(commentIcons || []).length > 0 && renderCommentIcons()}
           {comment && renderComment()}

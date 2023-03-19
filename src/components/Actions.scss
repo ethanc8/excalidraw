@@ -4,6 +4,13 @@
   border-radius: var(--border-radius-lg);
 }
 
+// vertical layout
+.undo-redo-buttons {
+  display: flex !important;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
 .zoom-button,
 .undo-redo-buttons button {
   border: 1px solid var(--default-border-color) !important;
@@ -61,32 +68,63 @@
 }
 
 .undo-redo-buttons {
+  // Old horizontal layout:
+
+  // .undo-button-container button {
+  //   border-top-left-radius: var(--border-radius-lg) !important;
+  //   border-bottom-left-radius: var(--border-radius-lg) !important;
+  //   border-right: 0 !important;
+
+  //   :root[dir="rtl"] & {
+  //     transform: scaleX(-1);
+  //   }
+
+  //   .ToolIcon__icon {
+  //     border-top-right-radius: 0 !important;
+  //     border-bottom-right-radius: 0 !important;
+  //   }
+  // }
+
+  // .redo-button-container button {
+  //   border-top-right-radius: var(--border-radius-lg) !important;
+  //   border-bottom-right-radius: var(--border-radius-lg) !important;
+
+  //   :root[dir="rtl"] & {
+  //     transform: scaleX(-1);
+  //   }
+
+  //   .ToolIcon__icon {
+  //     border-top-left-radius: 0 !important;
+  //     border-bottom-left-radius: 0 !important;
+  //   }
+  // }
+
   .undo-button-container button {
     border-top-left-radius: var(--border-radius-lg) !important;
-    border-bottom-left-radius: var(--border-radius-lg) !important;
-    border-right: 0 !important;
+    border-top-right-radius: var(--border-radius-lg) !important;
+    border-bottom: 0 !important;
 
-    :root[dir="rtl"] & {
-      transform: scaleX(-1);
-    }
+    // :root[dir="rtl"] & {
+    //   transform: scaleX(-1);
+    // }
 
     .ToolIcon__icon {
-      border-top-right-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
       border-bottom-right-radius: 0 !important;
     }
   }
 
   .redo-button-container button {
-    border-top-right-radius: var(--border-radius-lg) !important;
+    border-bottom-left-radius: var(--border-radius-lg) !important;
     border-bottom-right-radius: var(--border-radius-lg) !important;
 
-    :root[dir="rtl"] & {
-      transform: scaleX(-1);
-    }
+    // :root[dir="rtl"] & {
+    //   transform: scaleX(-1);
+    // }
 
     .ToolIcon__icon {
       border-top-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
     }
   }
 }

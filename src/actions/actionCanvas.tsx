@@ -1,4 +1,4 @@
-import { ColorPicker } from "../components/ColorPicker";
+import { ColorPicker, ColorPalette } from "../components/ColorPicker";
 import { ZoomInIcon, ZoomOutIcon } from "../components/icons";
 import { ToolButton } from "../components/ToolButton";
 import { CURSOR_TYPE, MIN_ZOOM, THEME, ZOOM_STEP } from "../constants";
@@ -19,6 +19,8 @@ import {
   isEraserActive,
   isHandToolActive,
 } from "../appState";
+
+import colors from "../colors";
 
 export const actionChangeViewBackgroundColor = register({
   name: "changeViewBackgroundColor",
@@ -51,6 +53,42 @@ export const actionChangeViewBackgroundColor = register({
           data-testid="canvas-background-picker"
           elements={elements}
           appState={appState}
+        />
+      </div>
+    );
+  },
+});
+
+export const actionChangeViewBackgroundColorInline = register({
+  name: "changeViewBackgroundColorInline",
+  trackEvent: false,
+  predicate: (elements, appState, props, app) => {
+    return (
+      !!app.props.UIOptions.canvasActions.changeViewBackgroundColor &&
+      !appState.viewModeEnabled
+    );
+  },
+  perform: (_, appState, value) => {
+    return {
+      appState: { ...appState, ...value },
+      commitToHistory: !!value.viewBackgroundColor,
+    };
+  },
+  PanelComponent: ({ elements, appState, updateData }) => {
+    // FIXME move me to src/components/mainMenu/DefaultItems.tsx
+    return (
+      <div style={{ position: "relative" }}>
+        <ColorPalette
+          label={t("labels.canvasBackground")}
+          type="canvasBackground"
+          color={appState.viewBackgroundColor}
+          onChange={(color) => updateData({ viewBackgroundColor: color })}
+          data-testid="canvas-background-picker"
+          elements={elements}
+          colors={colors.canvasBackground}
+          onClose={() => {}}
+          showInput={true}
+          isPopup={false}
         />
       </div>
     );
@@ -188,19 +226,19 @@ export const actionResetZoom = register({
     };
   },
   PanelComponent: ({ updateData, appState }) => (
-    <Tooltip label={t("buttons.resetZoom")} style={{ height: "100%" }}>
-      <ToolButton
-        type="button"
-        className="reset-zoom-button zoom-button"
-        title={t("buttons.resetZoom")}
-        aria-label={t("buttons.resetZoom")}
-        onClick={() => {
-          updateData(null);
-        }}
-      >
-        {(appState.zoom.value * 100).toFixed(0)}%
-      </ToolButton>
-    </Tooltip>
+    // <Tooltip label={t("buttons.resetZoom")} style={{ height: "100%" }}>
+    <ToolButton
+      type="button"
+      className="reset-zoom-button zoom-button"
+      title={t("buttons.resetZoom")}
+      aria-label={t("buttons.resetZoom")}
+      onClick={() => {
+        updateData(null);
+      }}
+    >
+      {(appState.zoom.value * 100).toFixed(0)}%
+    </ToolButton>
+    // </Tooltip>
   ),
   keyTest: (event) =>
     (event.code === CODES.ZERO || event.code === CODES.NUM_ZERO) &&

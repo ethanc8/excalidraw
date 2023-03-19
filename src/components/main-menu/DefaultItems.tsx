@@ -191,6 +191,27 @@ export const ChangeCanvasBackground = () => {
 };
 ChangeCanvasBackground.displayName = "ChangeCanvasBackground";
 
+export const ChangeCanvasBackgroundInline = () => {
+  const { t } = useI18n();
+  const appState = useExcalidrawAppState();
+  const actionManager = useExcalidrawActionManager();
+
+  if (appState.viewModeEnabled) {
+    return null;
+  }
+  return (
+    <div style={{ marginTop: "0.5rem" }}>
+      <div style={{ fontSize: ".75rem", marginBottom: ".5rem" }}>
+        {t("labels.canvasBackground")}
+      </div>
+      <div style={{ padding: "0 0.625rem" }}>
+        {actionManager.renderAction("changeViewBackgroundColorInline")}
+      </div>
+    </div>
+  );
+};
+ChangeCanvasBackground.displayName = "ChangeCanvasBackgroundInline";
+
 export const Export = () => {
   const { t } = useI18n();
   const setAppState = useExcalidrawSetAppState();

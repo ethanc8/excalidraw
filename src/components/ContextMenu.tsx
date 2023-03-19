@@ -16,6 +16,8 @@ import {
 } from "./App";
 import React from "react";
 
+import * as RadixContextMenu from "@radix-ui/react-context-menu";
+
 export type ContextMenuItem = typeof CONTEXT_MENU_SEPARATOR | Action;
 
 export type ContextMenuItems = (ContextMenuItem | false | null | undefined)[];
@@ -51,6 +53,67 @@ export const ContextMenu = React.memo(
       }
       return acc;
     }, []);
+
+    // return (
+    //   <RadixContextMenu.Root>
+    //     <RadixContextMenu.Portal>
+    //       <RadixContextMenu.Content className="ContextMenuContent">
+    //         {filteredItems.map((item, idx) => {
+    //           if (item === CONTEXT_MENU_SEPARATOR) {
+    //             if (
+    //               !filteredItems[idx - 1] ||
+    //               filteredItems[idx - 1] === CONTEXT_MENU_SEPARATOR
+    //             ) {
+    //               return null;
+    //             }
+    //             return <hr key={idx} className="context-menu-item-separator" />;
+    //           }
+
+    //           const actionName = item.name;
+    //           let label = "";
+    //           if (item.contextItemLabel) {
+    //             if (typeof item.contextItemLabel === "function") {
+    //               label = t(item.contextItemLabel(elements, appState));
+    //             } else {
+    //               label = t(item.contextItemLabel);
+    //             }
+    //           }
+
+    //           return (
+    //             <li
+    //               key={idx}
+    //               data-testid={actionName}
+    //               onClick={() => {
+    //                 // we need update state before executing the action in case
+    //                 // the action uses the appState it's being passed (that still
+    //                 // contains a defined contextMenu) to return the next state.
+    //                 setAppState({ contextMenu: null }, () => {
+    //                   actionManager.executeAction(item, "contextMenu");
+    //                 });
+    //               }}
+    //             >
+    //               <button
+    //                 className={clsx("context-menu-item", {
+    //                   dangerous: actionName === "deleteSelectedElements",
+    //                   checkmark: item.checked?.(appState),
+    //                 })}
+    //               >
+    //                 <div className="context-menu-item__label">{label}</div>
+    //                 <kbd className="context-menu-item__shortcut">
+    //                   {actionName
+    //                     ? getShortcutFromShortcutName(
+    //                         actionName as ShortcutName,
+    //                       )
+    //                     : ""}
+    //                 </kbd>
+    //               </button>
+    //             </li>
+    //           );
+    //         })}
+    //       </RadixContextMenu.Content>
+    //     </RadixContextMenu.Portal>
+    //   </RadixContextMenu.Root>
+    // );
 
     return (
       <Popover

@@ -1,7 +1,12 @@
 import { AppState } from "../../src/types";
 import { ButtonIconSelect } from "../components/ButtonIconSelect";
-import { ColorPicker } from "../components/ColorPicker";
+import { ColorPalette, ColorPicker } from "../components/ColorPicker";
 import { IconPicker } from "../components/IconPicker";
+
+import * as Slider from "@radix-ui/react-slider";
+
+import colors from "../colors";
+
 // TODO barnabasmolnar/editor-redesign
 // TextAlignTopIcon, TextAlignBottomIcon,TextAlignMiddleIcon,
 // ArrowHead icons
@@ -106,7 +111,7 @@ const changeProperty = (
   });
 };
 
-const getFormValue = function <T>(
+export const getFormValue = function <T>(
   elements: readonly ExcalidrawElement[],
   appState: AppState,
   getAttribute: (element: ExcalidrawElement) => T,
@@ -242,6 +247,60 @@ export const actionChangeStrokeColor = register({
         }
         elements={elements}
         appState={appState}
+      />
+    </>
+  ),
+});
+
+export const actionChangeStrokeColorInline = register({
+  name: "changeStrokeColorInline",
+  trackEvent: false,
+  perform: (elements, appState, value) => {
+    return {
+      ...(value.currentItemStrokeColor && {
+        elements: changeProperty(
+          elements,
+          appState,
+          (el) => {
+            return hasStrokeColor(el.type)
+              ? newElementWith(el, {
+                  strokeColor: value.currentItemStrokeColor,
+                })
+              : el;
+          },
+          true,
+        ),
+      }),
+      appState: {
+        ...appState,
+        ...value,
+      },
+      commitToHistory: !!value.currentItemStrokeColor,
+    };
+  },
+  PanelComponent: ({ elements, appState, updateData }) => (
+    <>
+      {/* <h3 aria-hidden="true">{t("labels.stroke")}</h3> */}
+      <ColorPalette
+        type="elementStroke"
+        label={t("labels.stroke")}
+        color={getFormValue(
+          elements,
+          appState,
+          (element) => element.strokeColor,
+          appState.currentItemStrokeColor,
+        )}
+        colors={colors.elementStrokeInline}
+        onChange={(color) => updateData({ currentItemStrokeColor: color })}
+        // isActive={appState.openPopup === "strokeColorPickerInline"}
+        // setActive={(active) =>
+        //   updateData({ openPopup: active ? "strokeColorPickerInline" : null })
+        // }
+        elements={elements}
+        onClose={() => {}}
+        showInput={false}
+        // appState={appState}
+        isPopup={false}
       />
     </>
   ),
@@ -388,6 +447,89 @@ export const actionChangeStrokeWidth = register({
   ),
 });
 
+export const actionChangeStrokeWidthInline = register({
+  name: "changeStrokeWidthInline",
+  trackEvent: false,
+  perform: (elements, appState, value) => {
+    return {
+      elements: changeProperty(elements, appState, (el) =>
+        newElementWith(el, {
+          strokeWidth: value,
+        }),
+      ),
+      appState: { ...appState, currentItemStrokeWidth: value },
+      commitToHistory: true,
+    };
+  },
+  PanelComponent: ({ elements, appState, updateData }) => (
+    <>
+      <fieldset>
+        {/* <legend>{t("labels.strokeWidth")}</legend> */}
+        <ButtonIconSelect
+          group="stroke-width"
+          options={[
+            {
+              value: 1,
+              text: t("labels.thin"),
+              icon: StrokeWidthBaseIcon,
+            },
+            {
+              value: 2,
+              text: t("labels.bold"),
+              icon: StrokeWidthBoldIcon,
+            },
+            {
+              value: 4,
+              text: t("labels.extraBold"),
+              icon: StrokeWidthExtraBoldIcon,
+            },
+          ]}
+          value={getFormValue(
+            elements,
+            appState,
+            (element) => element.strokeWidth,
+            appState.currentItemStrokeWidth,
+          )}
+          onChange={(value) => updateData(value)}
+        />
+
+        <div className="ThicknessSlider">
+          <Slider.Root
+            className="SliderRoot"
+            defaultValue={[1]}
+            min={1}
+            max={6}
+            step={1}
+            aria-label="Stroke width"
+            onValueChange={(value) => updateData(value)}
+          >
+            <Slider.Track className="SliderTrack">
+              <Slider.Range className="SliderRange" />
+            </Slider.Track>
+            <Slider.Thumb className="SliderThumb" />
+          </Slider.Root>
+        </div>
+
+        {/* <input
+          type="range"
+          min="1"
+          max="6"
+          step="1"
+          onChange={(event) => updateData(+event.target.value)}
+          value={
+            getFormValue(
+              elements,
+              appState,
+              (element) => element.strokeWidth,
+              appState.currentItemStrokeWidth,
+            ) ?? undefined
+          }
+        /> */}
+      </fieldset>
+    </>
+  ),
+});
+
 export const actionChangeSloppiness = register({
   name: "changeSloppiness",
   trackEvent: false,
@@ -506,7 +648,7 @@ export const actionChangeOpacity = register({
   PanelComponent: ({ elements, appState, updateData }) => (
     <label className="control-label">
       {t("labels.opacity")}
-      <input
+      {/* <input
         type="range"
         min="0"
         max="100"
@@ -520,7 +662,30 @@ export const actionChangeOpacity = register({
             appState.currentItemOpacity,
           ) ?? undefined
         }
-      />
+      /> */}
+      <div className="OpacitySlider">
+        <Slider.Root
+          className="SliderRoot"
+          defaultValue={[
+            getFormValue(
+              elements,
+              appState,
+              (element) => element.opacity,
+              appState.currentItemOpacity,
+            ) ?? 0,
+          ]}
+          min={0}
+          max={100}
+          step={10}
+          aria-label="Opacity"
+          onValueChange={(value) => updateData(value)}
+        >
+          <Slider.Track className="SliderTrack">
+            <Slider.Range className="SliderRange" />
+          </Slider.Track>
+          <Slider.Thumb className="SliderThumb" />
+        </Slider.Root>
+      </div>
     </label>
   ),
 });

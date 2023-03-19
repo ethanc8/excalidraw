@@ -5,7 +5,7 @@ import { AppState } from "../../types";
 import {
   ExitZenModeAction,
   FinalizeAction,
-  UndoRedoActions,
+  // UndoRedoActions,
   ZoomActions,
 } from "../Actions";
 import { useDevice } from "../App";
@@ -49,7 +49,7 @@ const Footer = ({
               zoom={appState.zoom}
             />
 
-            {!appState.viewModeEnabled && (
+            {/* {!appState.viewModeEnabled && (
               <UndoRedoActions
                 renderAction={actionManager.renderAction}
                 className={clsx("zen-mode-transition", {
@@ -57,7 +57,7 @@ const Footer = ({
                     appState.zenModeEnabled,
                 })}
               />
-            )}
+            )} */}
             {showFinalize && (
               <FinalizeAction
                 renderAction={actionManager.renderAction}

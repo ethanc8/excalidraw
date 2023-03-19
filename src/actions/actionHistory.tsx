@@ -91,7 +91,7 @@ export const createRedoAction: ActionCreator = (history) => ({
     (event[KEYS.CTRL_OR_CMD] &&
       event.shiftKey &&
       event.key.toLowerCase() === KEYS.Z) ||
-    (isWindows && event.ctrlKey && !event.shiftKey && event.key === KEYS.Y),
+    (event.ctrlKey && !event.shiftKey && event.key === KEYS.Y),
   PanelComponent: ({ updateData, data }) => (
     <ToolButton
       type="button"

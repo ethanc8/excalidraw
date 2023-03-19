@@ -164,6 +164,7 @@ export type AppState = {
     | "canvasColorPicker"
     | "backgroundColorPicker"
     | "strokeColorPicker"
+    | "strokeColorPickerInline"
     | null;
   openSidebar: "library" | "customSidebar" | null;
   openDialog: "imageExport" | "help" | "jsonExport" | null;
